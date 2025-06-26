@@ -315,3 +315,15 @@ Consistent code style (indentation, quotes…) Update/add tests if necessary
 This project is under MIT License – Check the LICENSE file for more details
 
 Made with ❤ by [Ethan Serpolet](https://ethan.serpolet.fun)
+
+## Desktop version skeleton
+
+A minimal Electron/Python setup is now provided in the `frontend` and `backend` folders.
+Refer to `docs/MIGRATION_PLAN.md` for details on how to use and extend it.
+To try the Electron app:
+
+```bash
+cd frontend
+npm install
+npm start
+```

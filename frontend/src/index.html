@@ -1,0 +1,2237 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lyric Video Creator By Ethan Serpolet</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            background: #0a0a0a;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Animated gradient background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(circle at 20% 50%, rgba(120, 50, 255, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 50, 120, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(50, 120, 255, 0.3) 0%, transparent 50%);
+            animation: gradientMove 20s ease infinite;
+            z-index: -1;
+        }
+
+        @keyframes gradientMove {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(-20px, -20px) rotate(120deg); }
+            66% { transform: translate(20px, -10px) rotate(240deg); }
+        }
+
+        /* Glass morphism base */
+        .glass {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            box-shadow:
+                0 8px 32px 0 rgba(0, 0, 0, 0.37),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+        }
+
+        .glass-dark {
+            background: linear-gradient(135deg, rgba(20, 20, 20, 0.8) 0%, rgba(10, 10, 10, 0.9) 100%);
+            backdrop-filter: blur(40px) saturate(200%);
+            -webkit-backdrop-filter: blur(40px) saturate(200%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow:
+                0 8px 32px 0 rgba(0, 0, 0, 0.6),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+        }
+
+        /* Liquid glass effect */
+        .liquid-glass {
+            position: relative;
+            background: linear-gradient(135deg,
+                rgba(255, 255, 255, 0.1) 0%,
+                rgba(255, 255, 255, 0.05) 40%,
+                rgba(255, 255, 255, 0.1) 100%);
+            backdrop-filter: blur(40px) saturate(200%);
+            -webkit-backdrop-filter: blur(40px) saturate(200%);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow:
+                0 8px 32px rgba(0, 0, 0, 0.4),
+                inset 0 0 20px rgba(255, 255, 255, 0.05),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+        }
+
+        .liquid-glass::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            animation: liquidMove 10s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes liquidMove {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(10%, -10%) scale(1.1); }
+            66% { transform: translate(-10%, 10%) scale(0.9); }
+        }
+
+        /* Scrollbar styling */
+        .control-panel::-webkit-scrollbar {
+            width: 10px;
+        }
+        .control-panel::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            margin: 10px 0;
+        }
+        .control-panel::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, rgba(120, 50, 255, 0.5), rgba(255, 50, 120, 0.5));
+            border-radius: 10px;
+            border: 2px solid rgba(0, 0, 0, 0.2);
+            transition: all 0.3s;
+        }
+        .control-panel::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, rgba(120, 50, 255, 0.7), rgba(255, 50, 120, 0.7));
+        }
+
+        /* Custom range slider - Liquid glass style */
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            outline: none;
+            border-radius: 4px;
+            margin: 0.75rem 0;
+            position: relative;
+            box-shadow:
+                inset 0 1px 3px rgba(0, 0, 0, 0.3),
+                0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        input[type="range"]::-webkit-slider-track {
+            width: 100%;
+            height: 8px;
+            background: linear-gradient(90deg,
+                rgba(120, 50, 255, 0.3) 0%,
+                rgba(255, 50, 120, 0.3) 100%);
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, #7832ff 0%, #ff3278 100%);
+            border: 3px solid rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            cursor: pointer;
+            margin-top: -8px;
+            box-shadow:
+                0 0 20px rgba(120, 50, 255, 0.6),
+                0 4px 15px rgba(0, 0, 0, 0.4),
+                inset 0 0 5px rgba(255, 255, 255, 0.3);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            z-index: 2;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            box-shadow:
+                0 0 30px rgba(120, 50, 255, 0.8),
+                0 6px 20px rgba(0, 0, 0, 0.5),
+                inset 0 0 8px rgba(255, 255, 255, 0.4);
+        }
+
+        input[type="range"]::-webkit-slider-thumb:active {
+            transform: scale(1.1);
+        }
+
+        /* Color picker - Liquid glass */
+        input[type="color"] {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            width: 48px;
+            height: 48px;
+            border: none;
+            cursor: pointer;
+            border-radius: 50%;
+            overflow: hidden;
+            box-shadow:
+                0 4px 20px rgba(0, 0, 0, 0.3),
+                inset 0 0 0 2px rgba(255, 255, 255, 0.2);
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        input[type="color"]:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow:
+                0 6px 25px rgba(0, 0, 0, 0.4),
+                inset 0 0 0 2px rgba(255, 255, 255, 0.3);
+        }
+
+        input[type="color"]::-webkit-color-swatch {
+            border: none;
+            border-radius: 50%;
+        }
+
+        input[type="color"]::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+
+        /* Control groups with enhanced glass effect */
+        .control-group {
+            background: linear-gradient(135deg,
+                rgba(255, 255, 255, 0.08) 0%,
+                rgba(255, 255, 255, 0.03) 100%);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            padding: 1.5rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            box-shadow:
+                0 8px 32px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        .control-group::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg,
+                transparent,
+                rgba(255, 255, 255, 0.3) 20%,
+                rgba(255, 255, 255, 0.3) 80%,
+                transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        .control-group:hover {
+            background: linear-gradient(135deg,
+                rgba(255, 255, 255, 0.12) 0%,
+                rgba(255, 255, 255, 0.05) 100%);
+            border-color: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
+            box-shadow:
+                0 12px 40px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* Progress bar */
+        #progress-container {
+            width: 350px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            overflow: hidden;
+            height: 1.2rem;
+            display: none;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow:
+                inset 0 2px 4px rgba(0, 0, 0, 0.3),
+                0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        #progress-bar {
+            height: 100%;
+            width: 0;
+            background: linear-gradient(90deg, #7832ff 0%, #ff3278 100%);
+            transition: width .1s linear;
+            box-shadow: 0 0 20px rgba(120, 50, 255, 0.6);
+            position: relative;
+            overflow: hidden;
+        }
+
+        #progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(90deg,
+                transparent,
+                rgba(255, 255, 255, 0.3),
+                transparent);
+            animation: progressShimmer 1s infinite;
+        }
+
+        @keyframes progressShimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* Custom checkbox - Liquid switch */
+        input[type="checkbox"] {
+            appearance: none;
+            width: 56px;
+            height: 28px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 28px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow:
+                inset 0 2px 4px rgba(0, 0, 0, 0.3),
+                0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        input[type="checkbox"]::after {
+            content: '';
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #fff 0%, #f0f0f0 100%);
+            top: 2px;
+            left: 2px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow:
+                0 2px 8px rgba(0, 0, 0, 0.3),
+                inset 0 0 3px rgba(255, 255, 255, 0.8);
+        }
+
+        input[type="checkbox"]:checked {
+            background: linear-gradient(135deg, #7832ff 0%, #ff3278 100%);
+            border-color: transparent;
+            box-shadow:
+                0 4px 20px rgba(120, 50, 255, 0.4),
+                inset 0 0 10px rgba(255, 255, 255, 0.2);
+        }
+
+        input[type="checkbox"]:checked::after {
+            transform: translateX(28px);
+            background: linear-gradient(135deg, #fff 0%, #fff 100%);
+            box-shadow:
+                0 3px 12px rgba(0, 0, 0, 0.4),
+                inset 0 0 3px rgba(255, 255, 255, 0.9);
+        }
+
+        /* Slider labels */
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 0.25rem;
+        }
+
+        .slider-label label {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .slider-label .value-display {
+            font-family: 'SF Mono', 'Monaco', 'Inconsolata', monospace;
+            color: #ff3278;
+            font-weight: 600;
+            padding: 0.25rem 0.75rem;
+            background: rgba(255, 50, 120, 0.1);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 50, 120, 0.3);
+            font-size: 0.75rem;
+            min-width: 60px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Select dropdowns - Liquid glass */
+        select {
+            appearance: none;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 0.75rem 1rem;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 0.875rem;
+            font-weight: 500;
+            width: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 10px;
+            padding-right: 2.5rem;
+            box-shadow:
+                0 4px 20px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        select:hover {
+            background-color: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-1px);
+            box-shadow:
+                0 6px 25px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15);
+        }
+
+        select:focus {
+            outline: none;
+            border-color: rgba(120, 50, 255, 0.5);
+            box-shadow:
+                0 0 0 3px rgba(120, 50, 255, 0.2),
+                0 6px 25px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15);
+        }
+
+        select option {
+            background: #1a1a1a;
+            color: white;
+            padding: 0.5rem;
+        }
+
+        /* Buttons - Liquid glass */
+        .btn-primary {
+            background: linear-gradient(135deg, #7832ff 0%, #ff3278 100%);
+            color: white;
+            font-weight: 600;
+            padding: 0.875rem 2rem;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow:
+                0 4px 20px rgba(120, 50, 255, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+            font-size: 0.875rem;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg,
+                transparent,
+                rgba(255, 255, 255, 0.3),
+                transparent);
+            transition: left 0.6s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow:
+                0 8px 30px rgba(120, 50, 255, 0.6),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary:active {
+            transform: translateY(0) scale(1);
+        }
+
+        .btn-primary:disabled {
+            background: rgba(255, 255, 255, 0.1);
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+
+        /* Header styling */
+        .header-gradient {
+            background: linear-gradient(135deg,
+                rgba(120, 50, 255, 0.1) 0%,
+                rgba(255, 50, 120, 0.1) 100%);
+            backdrop-filter: blur(20px) saturate(180%);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Canvas preview container */
+        #preview-container {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem 0;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.875rem;
+        }
+
+        footer a {
+            color: #ff3278;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        footer a:hover {
+            color: #7832ff;
+            text-decoration: underline;
+        }
+
+        /* File input styling */
+        input[type="file"] {
+            color: transparent;
+        }
+
+        input[type="file"]::-webkit-file-upload-button {
+            visibility: hidden;
+        }
+
+        input[type="file"]::before {
+            content: 'Choisir des fichiers';
+            display: inline-block;
+            background: linear-gradient(135deg, rgba(120, 50, 255, 0.2), rgba(255, 50, 120, 0.2));
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 0.5rem 1rem;
+            outline: none;
+            white-space: nowrap;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.875rem;
+            color: white;
+            transition: all 0.3s;
+        }
+
+        input[type="file"]:hover::before {
+            background: linear-gradient(135deg, rgba(120, 50, 255, 0.3), rgba(255, 50, 120, 0.3));
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-1px);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 1024px) {
+            .control-panel {
+                width: 320px;
+            }
+        }
+    </style>
+</head>
+<body class="text-gray-200 flex flex-col h-screen">
+
+    <header class="header-gradient glass p-4 flex items-center justify-between shadow-2xl z-20">
+        <div class="flex items-center space-x-4">
+            <h1 class="text-2xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 bg-clip-text text-transparent animate-gradient">
+                Lyric Video Creator
+            </h1>
+            <span class="text-sm font-medium text-purple-300 px-3 py-1 liquid-glass rounded-full border border-purple-400/30">
+                By Ethan Serpolet
+            </span>
+        </div>
+        <div id="export-section" class="flex items-center space-x-4">
+            <button id="export-btn" class="btn-primary" disabled>
+                <span class="flex items-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"></path>
+                    </svg>
+                    Exporter la Vidéo
+                </span>
+            </button>
+            <div id="progress-container">
+                <div id="progress-bar"></div>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex flex-grow overflow-hidden">
+        <aside class="w-96 glass-dark p-6 overflow-y-auto control-panel flex-shrink-0">
+            <div class="space-y-5">
+                <!-- 1. Fichiers Source -->
+                <div class="control-group">
+                    <h2 class="text-lg font-semibold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent border-b border-purple-500/30 pb-2 mb-4">
+                        1. Fichiers Source
+                    </h2>
+                    <input type="file" id="folder-selector" webkitdirectory directory class="w-full text-sm cursor-pointer"/>
+                    <div id="file-previews" class="mt-4 space-y-2 text-sm hidden">
+                        <div class="flex items-center p-2 rounded-lg glass">
+                            <span class="w-20 text-purple-400 font-medium">Image:</span>
+                            <span id="image-file" class="text-gray-300 break-all flex-1"></span>
+                        </div>
+                        <div class="flex items-center p-2 rounded-lg glass">
+                            <span class="w-20 text-purple-400 font-medium">Audio:</span>
+                            <span id="audio-file" class="text-gray-300 break-all flex-1"></span>
+                        </div>
+                        <div class="flex items-center p-2 rounded-lg glass">
+                            <span class="w-20 text-purple-400 font-medium">Paroles:</span>
+                            <span id="lrc-file" class="text-gray-300 break-all flex-1"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Format & Qualité -->
+                <div class="control-group">
+                    <h2 class="text-lg font-semibold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent border-b border-purple-500/30 pb-2 mb-4">
+                        2. Format & Qualité
+                    </h2>
+
+                    <label class="block mb-2 text-sm font-medium text-gray-300">Format d'image</label>
+                    <select id="video-aspect" class="mb-4">
+                        <option value="16:9" selected>16:9 (Paysage)</option>
+                        <option value="9:16">9:16 (Portrait - Stories)</option>
+                    </select>
+
+                    <label class="block mb-2 text-sm font-medium text-gray-300">Résolution</label>
+                    <select id="video-resolution" class="mb-4">
+                        <option value="1920x1080" selected>1080p (Full HD)</option>
+                        <option value="2560x1440">1440p (2K)</option>
+                        <option value="3840x2160">4K (Ultra HD)</option>
+                    </select>
+
+                    <label class="block mb-2 text-sm font-medium text-gray-300">Fréquence d'images</label>
+                    <select id="export-quality" class="mb-4">
+                        <option value="30">30 FPS</option>
+                        <option value="60" selected>60 FPS</option>
+                        <option value="120">120 FPS</option>
+                    </select>
+
+                    <label class="block mb-2 text-sm font-medium text-gray-300">Format de sortie</label>
+                    <select id="export-format" class="mb-4">
+                        <option value="webm">WebM (VP9)</option>
+                        <option value="mkv">MKV (Matroska)</option>
+                        <option value="mp4">MP4 (H.264)</option>
+                    </select>
+
+                    <label class="block mb-2 text-sm font-medium text-gray-300">Bitrate vidéo</label>
+                    <select id="video-bitrate">
+                        <option value="8000000">8 Mbps</option>
+                        <option value="12000000">12 Mbps</option>
+                        <option value="16000000" selected>16 Mbps</option>
+                        <option value="24000000">24 Mbps</option>
+                        <option value="50000000">50 Mbps</option>
+                        <option value="100000000">100 Mbps (Master)</option>
+                    </select>
+                </div>
+
+                <!-- 3. Visuels & Pochette -->
+                <div class="control-group">
+                    <h2 class="text-lg font-semibold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent border-b border-purple-500/30 pb-2 mb-4">
+                        3. Visuels & Pochette
+                    </h2>
+
+                    <div class="slider-label">
+                        <label for="bg-blur">Flou Arrière-plan</label>
+                        <span id="bg-blur-value" class="value-display">5</span>
+                    </div>
+                    <input type="range" id="bg-blur" min="0" max="50" value="5" class="w-full">
+
+                    <div class="switch-field mt-4">
+                        <label for="cover-enable" class="text-sm font-medium">Afficher la pochette</label>
+                        <input type="checkbox" id="cover-enable" checked>
+                    </div>
+
+                    <div id="cover-settings" class="mt-4 space-y-3">
+                        <label class="block mb-2 text-sm font-medium text-gray-300">Position de la pochette</label>
+                        <select id="cover-position" class="mb-3">
+                            <option value="right" selected>Droite</option>
+                            <option value="left">Gauche</option>
+                            <option value="center-top">Centre Haut</option>
+                            <option value="center-bottom">Centre Bas</option>
+                            <option value="corner-tl">Coin Haut Gauche</option>
+                            <option value="corner-tr">Coin Haut Droite</option>
+                            <option value="corner-bl">Coin Bas Gauche</option>
+                            <option value="corner-br">Coin Bas Droite</option>
+                        </select>
+
+                        <div class="slider-label">
+                            <label for="cover-size">Taille Pochette</label>
+                            <span id="cover-size-value" class="value-display">0.25</span>
+                        </div>
+                        <input type="range" id="cover-size" min="0.1" max="0.5" step="0.01" value="0.25" class="w-full">
+
+                        <div class="slider-label">
+                            <label for="cover-roundness">Arrondi Pochette</label>
+                            <span id="cover-roundness-value" class="value-display">20%</span>
+                        </div>
+                        <input type="range" id="cover-roundness" min="0" max="100" value="20" class="w-full">
+
+                        <div class="slider-label">
+                            <label for="cover-shadow">Ombre Pochette</label>
+                            <span id="cover-shadow-value" class="value-display">15</span>
+                        </div>
+                        <input type="range" id="cover-shadow" min="0" max="100" value="15" class="w-full">
+                    </div>
+                </div>
+
+                <!-- 4. Texte des Paroles -->
+                <div class="control-group">
+                    <h2 class="text-lg font-semibold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent border-b border-purple-500/30 pb-2 mb-4">
+                        4. Texte des Paroles
+                    </h2>
+
+                    <label class="block mb-2 text-sm font-medium text-gray-300">Position du texte</label>
+                    <select id="text-position" class="mb-4">
+                        <option value="center-left">Centre-Gauche</option>
+                        <option value="center" selected>Centre</option>
+                        <option value="center-right">Centre-Droite</option>
+                        <option value="bottom-center">Bas-Centre</option>
+                        <option value="top-center">Haut-Centre</option>
+                        <option value="bottom-left">Bas-Gauche</option>
+                        <option value="bottom-right">Bas-Droite</option>
+                    </select>
+
+                    <div class="slider-label">
+                        <label for="font-size">Taille Police</label>
+                        <span id="font-size-value" class="value-display">70px</span>
+                    </div>
+                    <input type="range" id="font-size" min="20" max="200" value="70" class="w-full">
+
+                    <div class="flex items-center justify-between mt-4">
+                        <label for="text-color" class="text-sm font-medium">Couleur du texte</label>
+                        <input type="color" id="text-color" value="#FFFFFF">
+                    </div>
+                </div>
+
+                <!-- 5. Police -->
+                <div class="control-group">
+                    <h2 class="text-lg font-semibold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent border-b border-purple-500/30 pb-2 mb-4">
+                        5. Police Personnalisée
+                    </h2>
+                    <p class="text-sm text-gray-400 mb-3">Formats acceptés: .ttf, .otf, .woff</p>
+                    <input type="file" id="font-loader" accept=".ttf,.otf,.woff,.woff2" class="w-full text-sm cursor-pointer"/>
+                    <p id="font-status" class="text-xs text-gray-400 mt-2"></p>
+                </div>
+
+                <!-- 6. Transitions -->
+                <div class="control-group">
+                    <h2 class="text-lg font-semibold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent border-b border-purple-500/30 pb-2 mb-4">
+                        6. Transitions
+                    </h2>
+
+                    <label class="block mb-2 text-sm font-medium text-gray-300">Apparition</label>
+                    <select id="text-transition-in" class="mb-3">
+                        <option value="fade">Fondu</option>
+                        <option value="slide-in-left">Glissement Gauche</option>
+                        <option value="slide-in-right">Glissement Droite</option>
+                        <option value="slide-in-up">Glissement Haut</option>
+                        <option value="slide-in-down" selected>Glissement Bas</option>
+                        <option value="zoom-in">Zoom Avant</option>
+                        <option value="rotate-in">Rotation</option>
+                        <option value="bounce-in">Rebond</option>
+                        <option value="elastic-in">Élastique</option>
+                    </select>
+
+                    <label class="block mb-2 text-sm font-medium text-gray-300">Disparition</label>
+                    <select id="text-transition-out" class="mb-3">
+                        <option value="fade">Fondu</option>
+                        <option value="slide-out-left">Glissement Gauche</option>
+                        <option value="slide-out-right">Glissement Droite</option>
+                        <option value="slide-out-up" selected>Glissement Haut</option>
+                        <option value="slide-out-down">Glissement Bas</option>
+                        <option value="zoom-out">Zoom Arrière</option>
+                        <option value="rotate-out">Rotation</option>
+                        <option value="bounce-out">Rebond</option>
+                        <option value="elastic-out">Élastique</option>
+                    </select>
+
+                    <div class="slider-label">
+                        <label for="transition-duration">Durée</label>
+                        <span id="transition-duration-value" class="value-display">500ms</span>
+                    </div>
+                    <input type="range" id="transition-duration" min="100" max="3000" step="50" value="500" class="w-full">
+                </div>
+
+                <!-- 7. Synchro Rythme -->
+                <div class="control-group">
+                    <h2 class="text-lg font-semibold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent border-b border-purple-500/30 pb-2 mb-4">
+                        7. Synchro Rythme
+                    </h2>
+
+                    <div class="switch-field">
+                        <label for="beat-sync-enable" class="text-sm font-medium">Activer la synchronisation</label>
+                        <input type="checkbox" id="beat-sync-enable">
+                    </div>
+
+                    <div id="beat-sync-settings" class="mt-4 space-y-3 hidden">
+                        <div class="slider-label">
+                            <label for="beat-sync-intensity">Intensité</label>
+                            <span id="beat-sync-intensity-value" class="value-display">0.05</span>
+                        </div>
+                        <input type="range" id="beat-sync-intensity" min="0.01" max="0.5" step="0.01" value="0.05" class="w-full">
+
+                        <label class="block mb-2 text-sm font-medium text-gray-300">Bande de Fréquence</label>
+                        <select id="beat-sync-band">
+                            <option value="bass" selected>Basses</option>
+                            <option value="mids">Mediums</option>
+                            <option value="highs">Aigus</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- 8. Effet de Particules -->
+                <div class="control-group">
+                    <h2 class="text-lg font-semibold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent border-b border-purple-500/30 pb-2 mb-4">
+                        8. Effet de Particules
+                    </h2>
+
+                    <div class="switch-field">
+                        <label for="particle-enable" class="text-sm font-medium">Activer les particules</label>
+                        <input type="checkbox" id="particle-enable">
+                    </div>
+
+                    <div id="particle-settings" class="mt-4 space-y-3 hidden">
+                        <div class="slider-label">
+                            <label for="particle-count">Nombre</label>
+                            <span id="particle-count-value" class="value-display">100</span>
+                        </div>
+                        <input type="range" id="particle-count" min="0" max="1000" value="100" class="w-full">
+
+                        <div class="slider-label">
+                            <label for="particle-speed">Vitesse Max</label>
+                            <span id="particle-speed-value" class="value-display">1.0</span>
+                        </div>
+                        <input type="range" id="particle-speed" min="0.1" max="10" step="0.1" value="1" class="w-full">
+
+                        <div class="slider-label">
+                            <label for="particle-size">Taille Max</label>
+                            <span id="particle-size-value" class="value-display">3px</span>
+                        </div>
+                        <input type="range" id="particle-size" min="1" max="20" value="3" class="w-full">
+
+                        <div class="slider-label">
+                            <label for="particle-opacity">Opacité</label>
+                            <span id="particle-opacity-value" class="value-display">0.7</span>
+                        </div>
+                        <input type="range" id="particle-opacity" min="0.1" max="1" step="0.1" value="0.7" class="w-full">
+
+                        <div class="flex items-center justify-between mt-4">
+                            <label for="particle-color" class="text-sm font-medium">Couleur</label>
+                            <input type="color" id="particle-color" value="#FFFFFF">
+                        </div>
+
+                        <label class="block mb-2 text-sm font-medium text-gray-300">Position dans la scène</label>
+                        <select id="particle-layer">
+                            <option value="background" selected>Arrière-plan</option>
+                            <option value="foreground">Premier plan</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- 9. Effets de Texte Actifs -->
+                <div class="control-group">
+                    <h2 class="text-lg font-semibold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent border-b border-purple-500/30 pb-2 mb-4">
+                        9. Effets de Texte Actifs
+                    </h2>
+
+                    <label class="block mb-2 text-sm font-medium text-gray-300">Effet Principal</label>
+                    <select id="active-effect" class="mb-3">
+                        <option value="none">Aucun</option>
+                        <option value="shake">Tremblement</option>
+                        <option value="pulse">Pulsation</option>
+                        <option value="float">Flottement</option>
+                        <option value="glow-pulse">Lueur Pulsante</option>
+                        <option value="wave">Vague</option>
+                        <option value="swing">Balancement</option>
+                        <option value="heartbeat">Battement de Cœur</option>
+                    </select>
+
+                    <!-- Shake controls -->
+                    <div id="shake-controls" class="space-y-3 hidden">
+                        <div class="slider-label">
+                            <label for="shake-amplitude">Intensité</label>
+                            <span id="shake-amplitude-value" class="value-display">1.5</span>
+                        </div>
+                        <input type="range" id="shake-amplitude" min="0.5" max="20" step="0.5" value="1.5" class="w-full">
+
+                        <div class="slider-label">
+                            <label for="shake-frequency">Vitesse</label>
+                            <span id="shake-frequency-value" class="value-display">25</span>
+                        </div>
+                        <input type="range" id="shake-frequency" min="5" max="100" value="25" class="w-full">
+                    </div>
+
+                    <!-- Pulse controls -->
+                    <div id="pulse-controls" class="space-y-3 hidden">
+                        <div class="slider-label">
+                            <label for="pulse-intensity">Intensité</label>
+                            <span id="pulse-intensity-value" class="value-display">1.05</span>
+                        </div>
+                        <input type="range" id="pulse-intensity" min="1.01" max="2" step="0.01" value="1.05" class="w-full">
+
+                        <div class="slider-label">
+                            <label for="pulse-speed">Vitesse</label>
+                            <span id="pulse-speed-value" class="value-display">5</span>
+                        </div>
+                        <input type="range" id="pulse-speed" min="1" max="20" value="5" class="w-full">
+                    </div>
+
+                    <!-- Float controls -->
+                    <div id="float-controls" class="space-y-3 hidden">
+                        <div class="slider-label">
+                            <label for="float-amplitude">Amplitude</label>
+                            <span id="float-amplitude-value" class="value-display">8px</span>
+                        </div>
+                        <input type="range" id="float-amplitude" min="2" max="50" value="8" class="w-full">
+
+                        <div class="slider-label">
+                            <label for="float-speed">Vitesse</label>
+                            <span id="float-speed-value" class="value-display">1.5</span>
+                        </div>
+                        <input type="range" id="float-speed" min="0.5" max="10" step="0.1" value="1.5" class="w-full">
+                    </div>
+
+                    <!-- Glow pulse controls -->
+                    <div id="glow-pulse-controls" class="space-y-3 hidden">
+                        <div class="slider-label">
+                            <label for="glow-pulse-intensity">Intensité</label>
+                            <span id="glow-pulse-intensity-value" class="value-display">15px</span>
+                        </div>
+                        <input type="range" id="glow-pulse-intensity" min="5" max="60" value="15" class="w-full">
+
+                        <div class="slider-label">
+                            <label for="glow-pulse-speed">Vitesse</label>
+                            <span id="glow-pulse-speed-value" class="value-display">3</span>
+                        </div>
+                        <input type="range" id="glow-pulse-speed" min="1" max="15" value="3" class="w-full">
+                    </div>
+
+                    <!-- Wave controls -->
+                    <div id="wave-controls" class="space-y-3 hidden">
+                        <div class="slider-label">
+                            <label for="wave-amplitude">Amplitude</label>
+                            <span id="wave-amplitude-value" class="value-display">10px</span>
+                        </div>
+                        <input type="range" id="wave-amplitude" min="2" max="40" value="10" class="w-full">
+
+                        <div class="slider-label">
+                            <label for="wave-speed">Vitesse</label>
+                            <span id="wave-speed-value" class="value-display">2</span>
+                        </div>
+                        <input type="range" id="wave-speed" min="0.5" max="10" step="0.1" value="2" class="w-full">
+                    </div>
+
+                    <!-- Swing controls -->
+                    <div id="swing-controls" class="space-y-3 hidden">
+                        <div class="slider-label">
+                            <label for="swing-angle">Angle</label>
+                            <span id="swing-angle-value" class="value-display">10°</span>
+                        </div>
+                        <input type="range" id="swing-angle" min="1" max="45" value="10" class="w-full">
+
+                        <div class="slider-label">
+                            <label for="swing-speed">Vitesse</label>
+                            <span id="swing-speed-value" class="value-display">1.5</span>
+                        </div>
+                        <input type="range" id="swing-speed" min="0.5" max="5" step="0.1" value="1.5" class="w-full">
+                    </div>
+
+                    <!-- Heartbeat controls -->
+                    <div id="heartbeat-controls" class="space-y-3 hidden">
+                        <div class="slider-label">
+                            <label for="heartbeat-intensity">Intensité</label>
+                            <span id="heartbeat-intensity-value" class="value-display">1.2</span>
+                        </div>
+                        <input type="range" id="heartbeat-intensity" min="1.05" max="2" step="0.05" value="1.2" class="w-full">
+
+                        <div class="slider-label">
+                            <label for="heartbeat-speed">BPM</label>
+                            <span id="heartbeat-speed-value" class="value-display">60</span>
+                        </div>
+                        <input type="range" id="heartbeat-speed" min="40" max="180" step="5" value="60" class="w-full">
+                    </div>
+                </div>
+
+                <!-- 10. Effets de Texte Statiques -->
+                <div class="control-group">
+                    <h2 class="text-lg font-semibold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent border-b border-purple-500/30 pb-2 mb-4">
+                        10. Effets de Texte Statiques
+                    </h2>
+
+                    <div class="switch-field">
+                        <label for="shadow-enable" class="text-sm font-medium">Activer l'ombre</label>
+                        <input type="checkbox" id="shadow-enable" checked>
+                    </div>
+
+                    <div id="shadow-settings" class="mt-3 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <label for="shadow-color" class="text-sm font-medium">Couleur de l'ombre</label>
+                            <input type="color" id="shadow-color" value="#000000">
+                        </div>
+
+                        <div class="slider-label">
+                            <label for="shadow-blur">Flou Ombre</label>
+                            <span id="shadow-blur-value" class="value-display">8px</span>
+                        </div>
+                        <input type="range" id="shadow-blur" min="0" max="50" value="8" class="w-full">
+
+                        <div class="slider-label">
+                            <label for="shadow-distance">Distance Ombre</label>
+                            <span id="shadow-distance-value" class="value-display">4px</span>
+                        </div>
+                        <input type="range" id="shadow-distance" min="0" max="30" value="4" class="w-full">
+                    </div>
+
+                    <div class="switch-field mt-4">
+                        <label for="glow-enable" class="text-sm font-medium">Activer la lueur</label>
+                        <input type="checkbox" id="glow-enable" checked>
+                    </div>
+
+                    <div id="glow-settings" class="mt-3 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <label for="glow-color" class="text-sm font-medium">Couleur de la lueur</label>
+                            <input type="color" id="glow-color" value="#7832ff">
+                        </div>
+
+                        <div class="slider-label">
+                            <label for="glow-radius">Rayon Lueur</label>
+                            <span id="glow-radius-value" class="value-display">10px</span>
+                        </div>
+                        <input type="range" id="glow-radius" min="0" max="60" value="10" class="w-full">
+
+                        <div class="slider-label">
+                            <label for="glow-intensity">Intensité Lueur</label>
+                            <span id="glow-intensity-value" class="value-display">1</span>
+                        </div>
+                        <input type="range" id="glow-intensity" min="0.1" max="3" step="0.1" value="1" class="w-full">
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="flex-grow flex flex-col items-center justify-center p-6">
+            <div class="w-full max-w-6xl liquid-glass rounded-2xl shadow-2xl relative overflow-hidden p-1">
+                <div class="w-full bg-black rounded-2xl overflow-hidden" id="preview-container">
+                    <canvas id="preview-canvas" class="w-full h-full object-cover"></canvas>
+                    <div id="placeholder" class="absolute inset-0 flex flex-col items-center justify-center text-gray-400">
+                        <svg class="w-24 h-24 mb-4 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z"></path>
+                        </svg>
+                        <p class="text-lg font-medium">Sélectionnez un dossier pour commencer</p>
+                        <p class="text-sm text-gray-500 mt-2">Dossier contenant: Image + Audio + Paroles (.lrc)</p>
+                    </div>
+                </div>
+            </div>
+            <div class="w-full max-w-4xl mt-6 liquid-glass rounded-2xl p-4">
+                <audio id="audio-player" controls class="w-full custom-audio-player" crossOrigin="anonymous"></audio>
+            </div>
+        </main>
+    </div>
+
+    <footer>
+        <p>Créé avec <span style="color: #ff3278;">❤</span> par <a href="https://ethan.serpolet.fun" target="_blank" rel="noopener">Ethan Serpolet</a></p>
+    </footer>
+
+<script>
+// --- DOM ELEMENTS & GLOBAL STATE ---
+const canvas = document.getElementById('preview-canvas');
+const ctx = canvas.getContext('2d', { alpha: false });
+const audioPlayer = document.getElementById('audio-player');
+const exportBtn = document.getElementById('export-btn');
+const progressContainer = document.getElementById('progress-container');
+const progressBar = document.getElementById('progress-bar');
+const placeholder = document.getElementById('placeholder');
+const filePreviews = document.getElementById('file-previews');
+const fontStatus = document.getElementById('font-status');
+const previewContainer = document.getElementById('preview-container');
+
+let files = { image: null, audio: null, lrc: null };
+let lyrics = [];
+let backgroundImage = new Image();
+let settings = {};
+let animationFrameId;
+let isExporting = false;
+let isAudioGraphSetup = false;
+let audioContext, analyserNode, frequencyData;
+let currentBeatScale = 1.0;
+let particles = [];
+let currentLine = null;
+let prevLine = null;
+let transitionStartTime = 0;
+let textWrappingCache = new Map();
+let canvasAspectRatio = 16/9;
+
+// --- UTILITY FUNCTIONS ---
+function hexToRgba(hex, alpha) {
+    if (!/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)) return `rgba(255,255,255,${alpha})`;
+    let c = hex.substring(1).split('');
+    if (c.length === 3) { c = [c[0], c[0], c[1], c[1], c[2], c[2]]; }
+    c = '0x' + c.join('');
+    return `rgba(${[(c>>16)&255, (c>>8)&255, c&255].join(',')},${alpha})`;
+}
+
+const easeInCubic = t => t * t * t;
+const easeOutCubic = t => 1 - Math.pow(1 - t, 3);
+const easeInOutCubic = t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+const elasticIn = t => {
+    const c4 = (2 * Math.PI) / 3;
+    return t === 0 ? 0 : t === 1 ? 1 : -Math.pow(2, 10 * t - 10) * Math.sin((t * 10 - 10.75) * c4);
+};
+const elasticOut = t => {
+    const c4 = (2 * Math.PI) / 3;
+    return t === 0 ? 0 : t === 1 ? 1 : Math.pow(2, -10 * t) * Math.sin((t * 10 - 0.75) * c4) + 1;
+};
+const bounceOut = t => {
+    const n1 = 7.5625;
+    const d1 = 2.75;
+    if (t < 1 / d1) return n1 * t * t;
+    else if (t < 2 / d1) return n1 * (t -= 1.5 / d1) * t + 0.75;
+    else if (t < 2.5 / d1) return n1 * (t -= 2.25 / d1) * t + 0.9375;
+    else return n1 * (t -= 2.625 / d1) * t + 0.984375;
+};
+
+// --- PARTICLE CLASS ---
+class Particle {
+    constructor() { this.reset(); }
+    reset() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * settings.particleSize + 1;
+        this.speedX = (Math.random() * 2 - 1) * settings.particleSpeed * 0.5;
+        this.speedY = (Math.random() * 2 - 1) * settings.particleSpeed * 0.5;
+        this.color = hexToRgba(settings.particleColor, settings.particleOpacity);
+        this.life = 1;
+    }
+    update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        this.life -= 0.01;
+
+        if (this.life <= 0 || this.x > canvas.width + this.size || this.x < -this.size ||
+            this.y > canvas.height + this.size || this.y < -this.size) {
+            this.reset();
+        }
+    }
+    draw() {
+        ctx.save();
+        ctx.globalAlpha = this.life * settings.particleOpacity;
+        ctx.fillStyle = this.color;
+        ctx.shadowBlur = this.size * 2;
+        ctx.shadowColor = this.color;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+    }
+}
+
+// --- INITIALIZATION ---
+function init() {
+    updateCanvasSize();
+    setupEventListeners();
+    updateSettings();
+    initParticles();
+    drawPlaceholder();
+}
+
+function updateCanvasSize() {
+    const aspectRatio = settings.videoAspect || '16:9';
+    const [widthRatio, heightRatio] = aspectRatio.split(':').map(Number);
+    canvasAspectRatio = widthRatio / heightRatio;
+
+    let width, height;
+    if (aspectRatio === '16:9') {
+        const resolution = settings.videoResolution || '1920x1080';
+        [width, height] = resolution.split('x').map(Number);
+    } else if (aspectRatio === '9:16') {
+        // Pour le format portrait, on inverse les dimensions
+        const resolution = settings.videoResolution || '1920x1080';
+        [height, width] = resolution.split('x').map(Number);
+    }
+
+    canvas.width = width;
+    canvas.height = height;
+
+    // Update preview container aspect ratio
+    previewContainer.style.aspectRatio = `${widthRatio} / ${heightRatio}`;
+}
+
+// --- EVENT LISTENERS ---
+function setupEventListeners() {
+    document.getElementById('folder-selector').addEventListener('change', handleFolderSelection);
+    document.getElementById('font-loader').addEventListener('change', handleFontSelection);
+    exportBtn.addEventListener('click', exportVideo);
+
+    // Toggle settings visibility
+    document.getElementById('cover-enable').addEventListener('change', (e) => {
+        document.getElementById('cover-settings').style.display = e.target.checked ? 'block' : 'none';
+        textWrappingCache.clear();
+        if (audioPlayer.paused) drawFrame(performance.now());
+    });
+
+    document.getElementById('particle-enable').addEventListener('change', (e) => {
+        document.getElementById('particle-settings').classList.toggle('hidden', !e.target.checked);
+    });
+
+    document.getElementById('shadow-enable').addEventListener('change', (e) => {
+        document.getElementById('shadow-settings').style.display = e.target.checked ? 'block' : 'none';
+    });
+
+    document.getElementById('glow-enable').addEventListener('change', (e) => {
+        document.getElementById('glow-settings').style.display = e.target.checked ? 'block' : 'none';
+    });
+
+    document.getElementById('beat-sync-enable').addEventListener('change', (e) => {
+        document.getElementById('beat-sync-settings').classList.toggle('hidden', !e.target.checked);
+    });
+
+    audioPlayer.addEventListener('play', () => {
+        setupAudioGraph();
+        if (animationFrameId) cancelAnimationFrame(animationFrameId);
+        animationLoop();
+    });
+
+    audioPlayer.addEventListener('pause', () => {
+        if (animationFrameId) cancelAnimationFrame(animationFrameId);
+        animationFrameId = null;
+    });
+
+    audioPlayer.addEventListener('seeked', () => {
+        if (audioPlayer.paused) drawFrame(performance.now());
+    });
+
+    // Update canvas when resolution or aspect changes
+    ['video-aspect', 'video-resolution'].forEach(id => {
+        document.getElementById(id).addEventListener('change', () => {
+            updateSettings();
+            updateCanvasSize();
+            textWrappingCache.clear();
+            initParticles();
+            if (audioPlayer.paused) drawFrame(performance.now());
+        });
+    });
+
+    const controls = document.querySelectorAll('.control-panel input, .control-panel select');
+    controls.forEach(input => {
+        input.addEventListener('input', (e) => {
+            const oldSettings = { ...settings };
+            updateSettings();
+
+            if (e.target.id === 'font-size' || e.target.id.startsWith('font-loader') ||
+                e.target.id === 'text-position' || e.target.id === 'cover-position' ||
+                e.target.id === 'cover-enable' || e.target.id === 'video-aspect') {
+                textWrappingCache.clear();
+            }
+
+            if (oldSettings.particleCount !== settings.particleCount ||
+                oldSettings.particleColor !== settings.particleColor ||
+                oldSettings.particleOpacity !== settings.particleOpacity) {
+                initParticles();
+            }
+
+            if (audioPlayer.paused) drawFrame(performance.now());
+        });
+    });
+
+    // Update value displays
+    document.querySelectorAll('input[type="range"]').forEach(slider => {
+        const valueSpan = document.getElementById(`${slider.id}-value`);
+        if (valueSpan) {
+            const updateValue = () => {
+                let value = slider.value;
+                let suffix = '';
+
+                // Add appropriate suffixes
+                if (slider.id.includes('blur') || slider.id.includes('radius') ||
+                    slider.id.includes('amplitude') || slider.id.includes('size') ||
+                    slider.id.includes('distance')) {
+                    suffix = 'px';
+                } else if (slider.id === 'cover-roundness') {
+                    suffix = '%';
+                } else if (slider.id === 'transition-duration') {
+                    suffix = 'ms';
+                } else if (slider.id === 'swing-angle') {
+                    suffix = '°';
+                }
+
+                if (slider.step && slider.step.includes('.')) {
+                    value = parseFloat(value).toFixed(2);
+                }
+
+                valueSpan.textContent = value + suffix;
+            };
+            slider.addEventListener('input', updateValue);
+            updateValue();
+        }
+    });
+
+    // Active effect controls visibility
+    document.getElementById('active-effect').addEventListener('change', (e) => {
+        ['shake', 'pulse', 'float', 'glow-pulse', 'wave', 'swing', 'heartbeat'].forEach(effect => {
+            const el = document.getElementById(`${effect}-controls`);
+            if (el) el.classList.add('hidden');
+        });
+        const activeControl = document.getElementById(`${e.target.value}-controls`);
+        if (activeControl) activeControl.classList.remove('hidden');
+    });
+}
+
+// --- SETTINGS UPDATE ---
+function updateSettings() {
+    settings = {
+        videoAspect: document.getElementById('video-aspect').value,
+        videoResolution: document.getElementById('video-resolution').value,
+        bgBlur: +document.getElementById('bg-blur').value,
+        coverEnable: document.getElementById('cover-enable').checked,
+        coverPosition: document.getElementById('cover-position').value,
+        coverSize: +document.getElementById('cover-size').value,
+        coverRoundness: +document.getElementById('cover-roundness').value,
+        coverShadow: +document.getElementById('cover-shadow').value,
+        fontFamily: settings.fontFamily || 'Inter',
+        textPosition: document.getElementById('text-position').value,
+        fontSize: +document.getElementById('font-size').value,
+        textColor: document.getElementById('text-color').value,
+        transitionIn: document.getElementById('text-transition-in').value,
+        transitionOut: document.getElementById('text-transition-out').value,
+        transitionDuration: +document.getElementById('transition-duration').value,
+        beatSyncEnable: document.getElementById('beat-sync-enable').checked,
+        beatSyncIntensity: +document.getElementById('beat-sync-intensity').value,
+        beatSyncBand: document.getElementById('beat-sync-band').value,
+        particleEnable: document.getElementById('particle-enable').checked,
+        particleCount: +document.getElementById('particle-count').value,
+        particleSpeed: +document.getElementById('particle-speed').value,
+        particleSize: +document.getElementById('particle-size').value,
+        particleOpacity: +document.getElementById('particle-opacity').value,
+        particleColor: document.getElementById('particle-color').value,
+        particleLayer: document.getElementById('particle-layer').value,
+        activeEffect: document.getElementById('active-effect').value,
+        shakeAmplitude: +document.getElementById('shake-amplitude').value,
+        shakeFrequency: +document.getElementById('shake-frequency').value,
+        pulseIntensity: +document.getElementById('pulse-intensity').value,
+        pulseSpeed: +document.getElementById('pulse-speed').value,
+        floatAmplitude: +document.getElementById('float-amplitude').value,
+        floatSpeed: +document.getElementById('float-speed').value,
+        glowPulseIntensity: +document.getElementById('glow-pulse-intensity').value,
+        glowPulseSpeed: +document.getElementById('glow-pulse-speed').value,
+        waveAmplitude: +document.getElementById('wave-amplitude').value,
+        waveSpeed: +document.getElementById('wave-speed').value,
+        swingAngle: +document.getElementById('swing-angle').value,
+        swingSpeed: +document.getElementById('swing-speed').value,
+        heartbeatIntensity: +document.getElementById('heartbeat-intensity').value,
+        heartbeatSpeed: +document.getElementById('heartbeat-speed').value,
+        shadowEnable: document.getElementById('shadow-enable').checked,
+        shadowColor: document.getElementById('shadow-color').value,
+        shadowBlur: +document.getElementById('shadow-blur').value,
+        shadowDistance: +document.getElementById('shadow-distance').value,
+        glowEnable: document.getElementById('glow-enable').checked,
+        glowColor: document.getElementById('glow-color').value,
+        glowRadius: +document.getElementById('glow-radius').value,
+        glowIntensity: +document.getElementById('glow-intensity').value,
+        exportFormat: document.getElementById('export-format').value,
+        exportQuality: +document.getElementById('export-quality').value,
+        videoBitrate: +document.getElementById('video-bitrate').value
+    };
+}
+
+// --- FILE HANDLING ---
+async function handleFolderSelection(e) {
+    const fileList = e.target.files;
+    if (!fileList.length) return;
+
+    files.image = Array.from(fileList).find(f => f.name.match(/\.(png|jpg|jpeg|webp)$/i));
+    files.audio = Array.from(fileList).find(f => f.name.match(/\.(mp3|wav|m4a|ogg)$/i));
+    files.lrc = Array.from(fileList).find(f => f.name.match(/\.lrc$/i));
+
+    let missingFiles = [];
+    if (!files.image) missingFiles.push("image (.jpg, .png)");
+    if (!files.audio) missingFiles.push("audio (.mp3, .wav)");
+    if (!files.lrc) missingFiles.push("paroles (.lrc)");
+
+    if (missingFiles.length > 0) {
+        alert(`Erreur: Fichiers manquants dans le dossier:\n\n- ${missingFiles.join('\n- ')}`);
+        return;
+    }
+
+    document.getElementById('image-file').textContent = files.image.name;
+    document.getElementById('audio-file').textContent = files.audio.name;
+    document.getElementById('lrc-file').textContent = files.lrc.name;
+    filePreviews.classList.remove('hidden');
+    placeholder.classList.add('hidden');
+
+    await loadAssets();
+}
+
+async function handleFontSelection(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const fontName = 'CustomFont_' + Date.now();
+    const url = URL.createObjectURL(file);
+
+    try {
+        const fontFace = new FontFace(fontName, `url(${url})`);
+        await fontFace.load();
+        document.fonts.add(fontFace);
+        settings.fontFamily = fontName;
+        fontStatus.textContent = `✓ ${file.name}`;
+        fontStatus.className = 'text-xs text-green-400 mt-2';
+        textWrappingCache.clear();
+        if (audioPlayer.paused) drawFrame(performance.now());
+    } catch (error) {
+        console.error("Font loading error:", error);
+        fontStatus.textContent = `✗ Erreur de chargement`;
+        fontStatus.className = 'text-xs text-red-400 mt-2';
+    }
+}
+
+async function loadAssets() {
+    backgroundImage.src = URL.createObjectURL(files.image);
+    await new Promise((resolve, reject) => {
+        backgroundImage.onload = resolve;
+        backgroundImage.onerror = reject;
+    });
+
+    audioPlayer.src = URL.createObjectURL(files.audio);
+    isAudioGraphSetup = false;
+
+    const lrcText = await files.lrc.text();
+    parseLRC(lrcText);
+    drawFrame(performance.now());
+    exportBtn.disabled = false;
+}
+
+// --- AUDIO SETUP ---
+function setupAudioGraph() {
+    if (isAudioGraphSetup || !window.AudioContext) return;
+
+    audioContext = new(window.AudioContext || window.webkitAudioContext)();
+    const sourceNode = audioContext.createMediaElementSource(audioPlayer);
+    analyserNode = audioContext.createAnalyser();
+    analyserNode.fftSize = 512;
+    analyserNode.smoothingTimeConstant = 0.8;
+    frequencyData = new Uint8Array(analyserNode.frequencyBinCount);
+    sourceNode.connect(analyserNode);
+    analyserNode.connect(audioContext.destination);
+    isAudioGraphSetup = true;
+}
+
+// --- LRC PARSING ---
+function parseLRC(text) {
+    lyrics = [];
+    const regex = /\[(\d{2}):(\d{2})[.:](\d{2,3})\](.*)/;
+
+    text.split('\n').forEach(line => {
+        const match = line.match(regex);
+        if (match) {
+            const time = parseInt(match[1]) * 60 + parseInt(match[2]) +
+                        parseInt(match[3]) / (match[3].length === 2 ? 100 : 1000);
+            const textContent = match[4].trim();
+            if (textContent) lyrics.push({ id: Math.random(), time, text: textContent });
+        }
+    });
+
+    lyrics.sort((a, b) => a.time - b.time);
+    textWrappingCache.clear();
+}
+
+// --- ANIMATION LOOP ---
+function animationLoop(timestamp) {
+    if (isExporting) return;
+    drawFrame(timestamp);
+    animationFrameId = requestAnimationFrame(animationLoop);
+}
+
+// --- DRAWING FUNCTIONS ---
+function drawPlaceholder() {
+    ctx.fillStyle = '#0a0a0a';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+}
+
+function drawFrame(time) {
+    ctx.save();
+
+    if (analyserNode && settings.beatSyncEnable && !audioPlayer.paused) {
+        analyserNode.getByteFrequencyData(frequencyData);
+    }
+
+    drawBackground();
+
+    if (settings.particleEnable && settings.particleLayer === 'background') {
+        updateAndDrawParticles();
+    }
+
+    const coverArtMetrics = settings.coverEnable ? drawCoverArt() : { x: 0, width: 0, y: 0, height: 0 };
+
+    const currentTime = audioPlayer.currentTime;
+    let activeIndex = -1;
+    for (let i = 0; i < lyrics.length; i++) {
+        if (lyrics[i].time <= currentTime) activeIndex = i;
+        else break;
+    }
+
+    let lineIsVisible = false;
+    if (activeIndex !== -1) {
+        const nextLyric = lyrics[activeIndex + 1];
+        const endTime = nextLyric ? nextLyric.time : (audioPlayer.duration || Infinity);
+        if (currentTime < endTime) lineIsVisible = true;
+    }
+
+    const newLine = lineIsVisible ? lyrics[activeIndex] : null;
+    if (newLine && (!currentLine || newLine.id !== currentLine.id)) {
+        prevLine = currentLine;
+        currentLine = newLine;
+        transitionStartTime = time;
+    }
+    else if (!newLine && currentLine) {
+        prevLine = currentLine;
+        currentLine = null;
+        transitionStartTime = time;
+    }
+
+    const transitionDuration = settings.transitionDuration;
+    if (prevLine && time - transitionStartTime <= transitionDuration) {
+        drawLyricText(prevLine, time, 'disappearing', coverArtMetrics);
+    }
+    else {
+        prevLine = null;
+    }
+
+    if (currentLine) {
+        const isTransitioningIn = prevLine !== null && (time - transitionStartTime <= transitionDuration);
+        const state = isTransitioningIn ? 'appearing' : 'stable';
+        drawLyricText(currentLine, time, state, coverArtMetrics);
+    }
+
+    if (settings.particleEnable && settings.particleLayer === 'foreground') {
+        updateAndDrawParticles();
+    }
+
+    ctx.restore();
+}
+
+function drawBackground() {
+    if (!backgroundImage.src) {
+        drawPlaceholder();
+        return;
+    }
+
+    ctx.save();
+    ctx.filter = `blur(${settings.bgBlur}px)`;
+
+    let targetScale = 1.0;
+    if (settings.beatSyncEnable && frequencyData && !isExporting) {
+        const binCount = analyserNode.frequencyBinCount;
+        const bands = {
+            bass: [1, Math.floor(binCount * 0.1)],
+            mids: [Math.floor(binCount * 0.1), Math.floor(binCount * 0.4)],
+            highs: [Math.floor(binCount * 0.4), binCount - 1]
+        };
+        const [start, end] = bands[settings.beatSyncBand] || bands.bass;
+
+        let beatValue = 0;
+        for (let i = start; i < end; i++) {
+            beatValue += frequencyData[i];
+        }
+        beatValue /= (end - start);
+        const normalizedBeat = (beatValue / 255) ** 2;
+        targetScale = 1 + (normalizedBeat * settings.beatSyncIntensity);
+    }
+
+    currentBeatScale += (targetScale - currentBeatScale) * 0.15;
+
+    const imgAspect = backgroundImage.width / backgroundImage.height;
+    const canvasAspect = canvas.width / canvas.height;
+    let sx = 0, sy = 0, sWidth = backgroundImage.width, sHeight = backgroundImage.height;
+
+    if (imgAspect > canvasAspect) {
+        sWidth = sHeight * canvasAspect;
+        sx = (backgroundImage.width - sWidth) / 2;
+    }
+    else {
+        sHeight = sWidth / canvasAspect;
+        sy = (backgroundImage.height - sHeight) / 2;
+    }
+
+    ctx.translate(canvas.width / 2, canvas.height / 2);
+    ctx.scale(currentBeatScale, currentBeatScale);
+    ctx.translate(-canvas.width / 2, -canvas.height / 2);
+    ctx.drawImage(backgroundImage, sx, sy, sWidth, sHeight, 0, 0, canvas.width, canvas.height);
+    ctx.restore();
+}
+
+function drawCoverArt() {
+    if (!backgroundImage.src || !settings.coverEnable || settings.coverSize <= 0.01) {
+        return { x: 0, y: 0, width: 0, height: 0 };
+    }
+
+    const coverWidth = canvas.height * settings.coverSize;
+    const coverHeight = coverWidth;
+    const margin = canvas.width * 0.05;
+
+    let coverX, coverY;
+
+    switch (settings.coverPosition) {
+        case 'left':
+            coverX = margin;
+            coverY = (canvas.height - coverHeight) / 2;
+            break;
+        case 'right':
+            coverX = canvas.width - coverWidth - margin;
+            coverY = (canvas.height - coverHeight) / 2;
+            break;
+        case 'center-top':
+            coverX = (canvas.width - coverWidth) / 2;
+            coverY = margin;
+            break;
+        case 'center-bottom':
+            coverX = (canvas.width - coverWidth) / 2;
+            coverY = canvas.height - coverHeight - margin;
+            break;
+        case 'corner-tl':
+            coverX = margin;
+            coverY = margin;
+            break;
+        case 'corner-tr':
+            coverX = canvas.width - coverWidth - margin;
+            coverY = margin;
+            break;
+        case 'corner-bl':
+            coverX = margin;
+            coverY = canvas.height - coverHeight - margin;
+            break;
+        case 'corner-br':
+            coverX = canvas.width - coverWidth - margin;
+            coverY = canvas.height - coverHeight - margin;
+            break;
+        default:
+            coverX = canvas.width - coverWidth - margin;
+            coverY = (canvas.height - coverHeight) / 2;
+    }
+
+    const radius = Math.min(coverWidth / 2, coverHeight / 2) * (settings.coverRoundness / 100);
+
+    ctx.save();
+
+    // Enhanced shadow for cover art
+    if (settings.coverShadow > 0) {
+        ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
+        ctx.shadowBlur = settings.coverShadow;
+        ctx.shadowOffsetX = settings.coverShadow * 0.3;
+        ctx.shadowOffsetY = settings.coverShadow * 0.3;
+    }
+
+    // Draw rounded rectangle path
+    ctx.beginPath();
+    ctx.moveTo(coverX + radius, coverY);
+    ctx.lineTo(coverX + coverWidth - radius, coverY);
+    ctx.quadraticCurveTo(coverX + coverWidth, coverY, coverX + coverWidth, coverY + radius);
+    ctx.lineTo(coverX + coverWidth, coverY + coverHeight - radius);
+    ctx.quadraticCurveTo(coverX + coverWidth, coverY + coverHeight, coverX + coverWidth - radius, coverY + coverHeight);
+    ctx.lineTo(coverX + radius, coverY + coverHeight);
+    ctx.quadraticCurveTo(coverX, coverY + coverHeight, coverX, coverY + coverHeight - radius);
+    ctx.lineTo(coverX, coverY + radius);
+    ctx.quadraticCurveTo(coverX, coverY, coverX + radius, coverY);
+    ctx.closePath();
+
+    // Fill with image
+    ctx.clip();
+    ctx.drawImage(backgroundImage, coverX, coverY, coverWidth, coverHeight);
+
+    // Add border
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    ctx.restore();
+
+    return { x: coverX, y: coverY, width: coverWidth, height: coverHeight };
+}
+
+function drawLyricText(lyric, time, state, coverArtMetrics) {
+    if (!lyric || !lyric.text) return;
+
+    ctx.save();
+
+    const { x, y, textAlign, maxWidth } = getTextPosition(coverArtMetrics);
+    const fontSize = settings.fontSize * (canvas.height / 1080);
+
+    ctx.font = `bold ${fontSize}px "${settings.fontFamily}", Inter, sans-serif`;
+    ctx.textAlign = textAlign;
+    ctx.textBaseline = 'middle';
+
+    const cacheKey = `${lyric.id}-${settings.fontSize}-${settings.fontFamily}-${settings.textPosition}-${settings.coverPosition}-${settings.coverEnable}-${settings.videoAspect}`;
+    let lines = textWrappingCache.get(cacheKey);
+
+    if (!lines) {
+        const words = lyric.text.split(' ');
+        lines = [];
+        let currentLineText = '';
+
+        for (const word of words) {
+            const testLine = currentLineText ? `${currentLineText} ${word}` : word;
+            if (ctx.measureText(testLine).width > maxWidth && currentLineText) {
+                lines.push(currentLineText);
+                currentLineText = word;
+            } else {
+                currentLineText = testLine;
+            }
+        }
+        lines.push(currentLineText);
+        textWrappingCache.set(cacheKey, lines);
+    }
+
+    const lineHeight = fontSize * 1.3;
+    const totalTextHeight = (lines.length - 1) * lineHeight;
+    const startY = y - (totalTextHeight / 2);
+
+    let transitionTransform = { x: 0, y: 0, scale: 1, alpha: 1, rotation: 0 };
+    const elapsed = isExporting ? (audioPlayer.currentTime - lyric.time) * 1000 : time - transitionStartTime;
+    const progress = Math.min(elapsed / settings.transitionDuration, 1);
+
+    if (state === 'appearing') transitionTransform = applyTransition(progress, settings.transitionIn, false);
+    else if (state === 'disappearing') transitionTransform = applyTransition(progress, settings.transitionOut, true);
+
+    const activeEffect = applyActiveEffect(isExporting ? audioPlayer.currentTime * 1000 : time);
+
+    ctx.globalAlpha = transitionTransform.alpha;
+    ctx.translate(x + transitionTransform.x, startY + transitionTransform.y);
+    ctx.scale(transitionTransform.scale, transitionTransform.scale);
+    ctx.rotate(transitionTransform.rotation * Math.PI / 180);
+
+    for (let i = 0; i < lines.length; i++) {
+        const lineY = i * lineHeight;
+        ctx.save();
+
+        // Apply active effect transforms
+        ctx.translate(activeEffect.x, activeEffect.y + lineY);
+        ctx.scale(activeEffect.scale, activeEffect.scale);
+        ctx.rotate(activeEffect.rotation * Math.PI / 180);
+
+        // Apply text effects (shadow and glow)
+        if (settings.shadowEnable) {
+            ctx.shadowColor = settings.shadowColor;
+            ctx.shadowBlur = settings.shadowBlur;
+            ctx.shadowOffsetX = settings.shadowDistance;
+            ctx.shadowOffsetY = settings.shadowDistance;
+        }
+
+        // Draw glow effect with multiple passes for intensity
+        if (settings.glowEnable) {
+            const glowRadius = settings.glowRadius + activeEffect.glowRadius;
+            const glowIntensity = settings.glowIntensity;
+
+            ctx.shadowColor = settings.glowColor;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 0;
+
+            // Multiple glow passes for better effect
+            for (let g = 0; g < glowIntensity; g++) {
+                ctx.shadowBlur = glowRadius * (1 + g * 0.5);
+                ctx.fillStyle = settings.glowColor;
+                ctx.globalAlpha = (transitionTransform.alpha * 0.3) / (g + 1);
+                ctx.fillText(lines[i], 0, 0);
+            }
+
+            ctx.globalAlpha = transitionTransform.alpha;
+        }
+
+        // Draw main text
+        ctx.shadowColor = settings.shadowEnable ? settings.shadowColor : 'transparent';
+        ctx.shadowBlur = settings.shadowEnable ? settings.shadowBlur : 0;
+        ctx.fillStyle = settings.textColor;
+        ctx.fillText(lines[i], 0, 0);
+
+        ctx.restore();
+    }
+
+    ctx.restore();
+}
+
+function getTextPosition(coverArtMetrics) {
+    const margin = canvas.width * 0.05;
+    const padding = 40;
+    let x, y, textAlign, availableWidth;
+
+    if (settings.coverEnable && coverArtMetrics.width > 0) {
+        const coverLeft = coverArtMetrics.x;
+        const coverRight = coverArtMetrics.x + coverArtMetrics.width;
+        const coverTop = coverArtMetrics.y;
+        const coverBottom = coverArtMetrics.y + coverArtMetrics.height;
+
+        switch (settings.textPosition) {
+            case 'center-left':
+                if (settings.coverPosition === 'left' || settings.coverPosition === 'corner-tl' || settings.coverPosition === 'corner-bl') {
+                    x = (coverRight + canvas.width / 2) / 2;
+                    availableWidth = (canvas.width / 2 - coverRight - padding * 2);
+                } else {
+                    x = canvas.width * 0.25;
+                    availableWidth = canvas.width * 0.4;
+                }
+                y = canvas.height / 2;
+                textAlign = 'center';
+                break;
+
+            case 'center':
+                x = canvas.width / 2;
+                y = canvas.height / 2;
+                textAlign = 'center';
+                if (settings.coverPosition === 'center-top' || settings.coverPosition === 'center-bottom') {
+                    availableWidth = canvas.width * 0.8;
+                } else {
+                    availableWidth = canvas.width * 0.7;
+                }
+                break;
+
+            case 'center-right':
+                if (settings.coverPosition === 'right' || settings.coverPosition === 'corner-tr' || settings.coverPosition === 'corner-br') {
+                    x = (canvas.width / 2 + coverLeft) / 2;
+                    availableWidth = (coverLeft - canvas.width / 2 - padding * 2);
+                } else {
+                    x = canvas.width * 0.75;
+                    availableWidth = canvas.width * 0.4;
+                }
+                y = canvas.height / 2;
+                textAlign = 'center';
+                break;
+
+            case 'bottom-center':
+                x = canvas.width / 2;
+                y = canvas.height * 0.85;
+                textAlign = 'center';
+                availableWidth = canvas.width * 0.8;
+                break;
+
+            case 'top-center':
+                x = canvas.width / 2;
+                y = canvas.height * 0.15;
+                textAlign = 'center';
+                availableWidth = canvas.width * 0.8;
+                break;
+
+            case 'bottom-left':
+                x = margin + padding;
+                y = canvas.height * 0.85;
+                textAlign = 'left';
+                availableWidth = canvas.width * 0.4;
+                break;
+
+            case 'bottom-right':
+                x = canvas.width - margin - padding;
+                y = canvas.height * 0.85;
+                textAlign = 'right';
+                availableWidth = canvas.width * 0.4;
+                break;
+
+            default:
+                x = canvas.width / 2;
+                y = canvas.height / 2;
+                textAlign = 'center';
+                availableWidth = canvas.width * 0.7;
+        }
+    } else {
+        switch (settings.textPosition) {
+            case 'center-left':
+                x = canvas.width * 0.25;
+                y = canvas.height / 2;
+                textAlign = 'center';
+                availableWidth = canvas.width * 0.4;
+                break;
+            case 'center':
+                x = canvas.width / 2;
+                y = canvas.height / 2;
+                textAlign = 'center';
+                availableWidth = canvas.width * 0.8;
+                break;
+            case 'center-right':
+                x = canvas.width * 0.75;
+                y = canvas.height / 2;
+                textAlign = 'center';
+                availableWidth = canvas.width * 0.4;
+                break;
+            case 'bottom-center':
+                x = canvas.width / 2;
+                y = canvas.height * 0.85;
+                textAlign = 'center';
+                availableWidth = canvas.width * 0.8;
+                break;
+            case 'top-center':
+                x = canvas.width / 2;
+                y = canvas.height * 0.15;
+                textAlign = 'center';
+                availableWidth = canvas.width * 0.8;
+                break;
+            case 'bottom-left':
+                x = margin + padding;
+                y = canvas.height * 0.85;
+                textAlign = 'left';
+                availableWidth = canvas.width * 0.4;
+                break;
+            case 'bottom-right':
+                x = canvas.width - margin - padding;
+                y = canvas.height * 0.85;
+                textAlign = 'right';
+                availableWidth = canvas.width * 0.4;
+                break;
+            default:
+                x = canvas.width / 2;
+                y = canvas.height / 2;
+                textAlign = 'center';
+                availableWidth = canvas.width * 0.8;
+        }
+    }
+
+    return { x, y, textAlign, maxWidth: availableWidth };
+}
+
+// --- TRANSITIONS & EFFECTS ---
+function applyTransition(progress, type, isOut) {
+    let p = progress;
+    let x = 0, y = 0, scale = 1, rotation = 0;
+    const alpha = isOut ? 1 - p : p;
+    const moveAmount = 200; // Increased for more dramatic transitions
+
+    switch (type) {
+        case 'fade':
+            p = isOut ? easeInCubic(progress) : easeOutCubic(progress);
+            break;
+
+        case 'slide-in-left':
+            p = easeOutCubic(progress);
+            x = (1 - p) * -moveAmount;
+            break;
+
+        case 'slide-out-left':
+            p = easeInCubic(progress);
+            x = p * -moveAmount;
+            break;
+
+        case 'slide-in-right':
+            p = easeOutCubic(progress);
+            x = (1 - p) * moveAmount;
+            break;
+
+        case 'slide-out-right':
+            p = easeInCubic(progress);
+            x = p * moveAmount;
+            break;
+
+        case 'slide-in-up':
+            p = easeOutCubic(progress);
+            y = (1 - p) * -moveAmount;
+            break;
+
+        case 'slide-out-up':
+            p = easeInCubic(progress);
+            y = p * -moveAmount;
+            break;
+
+        case 'slide-in-down':
+            p = easeOutCubic(progress);
+            y = (1 - p) * moveAmount;
+            break;
+
+        case 'slide-out-down':
+            p = easeInCubic(progress);
+            y = p * moveAmount;
+            break;
+
+        case 'zoom-in':
+            p = easeOutCubic(progress);
+            scale = 0.5 + p * 0.5;
+            break;
+
+        case 'zoom-out':
+            p = easeInCubic(progress);
+            scale = 1 - p * 0.5;
+            break;
+
+        case 'rotate-in':
+            p = easeOutCubic(progress);
+            rotation = (1 - p) * 360;
+            scale = 0.8 + p * 0.2;
+            break;
+
+        case 'rotate-out':
+            p = easeInCubic(progress);
+            rotation = p * -360;
+            scale = 1 - p * 0.2;
+            break;
+
+        case 'bounce-in':
+            p = bounceOut(progress);
+            scale = p;
+            break;
+
+        case 'bounce-out':
+            p = 1 - bounceOut(1 - progress);
+            scale = p;
+            break;
+
+        case 'elastic-in':
+            p = isOut ? 1 - elasticOut(1 - progress) : elasticOut(progress);
+            scale = 0.8 + p * 0.2;
+            break;
+
+        case 'elastic-out':
+            p = isOut ? elasticIn(progress) : 1 - elasticIn(1 - progress);
+            scale = p;
+            break;
+    }
+
+    return { x, y, scale, alpha: isOut ? 1 - progress : progress, rotation };
+}
+
+function applyActiveEffect(time) {
+    let x = 0, y = 0, scale = 1, glowRadius = 0, rotation = 0;
+    const t = time / 1000;
+
+    switch (settings.activeEffect) {
+        case 'shake':
+            x = Math.sin(t * settings.shakeFrequency) * settings.shakeAmplitude;
+            y = Math.cos(t * settings.shakeFrequency * 1.2) * settings.shakeAmplitude;
+            break;
+
+        case 'pulse':
+            scale = 1 + ((Math.sin(t * settings.pulseSpeed) + 1) / 2) * (settings.pulseIntensity - 1);
+            break;
+
+        case 'float':
+            x = Math.cos(t * settings.floatSpeed / 2) * (settings.floatAmplitude * 0.5);
+            y = Math.sin(t * settings.floatSpeed) * settings.floatAmplitude;
+            break;
+
+        case 'glow-pulse':
+            glowRadius = ((Math.sin(t * settings.glowPulseSpeed) + 1) / 2) * settings.glowPulseIntensity;
+            break;
+
+        case 'wave':
+            const wavePhase = t * settings.waveSpeed;
+            x = Math.sin(wavePhase) * settings.waveAmplitude;
+            y = Math.cos(wavePhase * 2) * (settings.waveAmplitude * 0.5);
+            break;
+
+        case 'swing':
+            rotation = Math.sin(t * settings.swingSpeed) * settings.swingAngle;
+            break;
+
+        case 'heartbeat':
+            const beatPhase = (t * settings.heartbeatSpeed / 60) % 1;
+            if (beatPhase < 0.1) {
+                scale = 1 + (settings.heartbeatIntensity - 1) * Math.sin(beatPhase * 10 * Math.PI);
+            } else if (beatPhase < 0.15) {
+                scale = 1 + (settings.heartbeatIntensity - 1) * 0.5 * Math.sin((beatPhase - 0.1) * 20 * Math.PI);
+            }
+            break;
+    }
+
+    return { x, y, scale, glowRadius, rotation };
+}
+
+// --- PARTICLES ---
+function initParticles() {
+    particles = [];
+    if (canvas.width > 0 && settings.particleEnable) {
+        for (let i = 0; i < settings.particleCount; i++) {
+            particles.push(new Particle());
+        }
+    }
+}
+
+function updateAndDrawParticles() {
+    if (!settings.particleEnable) return;
+
+    if (particles.length !== settings.particleCount) initParticles();
+
+    ctx.save();
+    ctx.globalCompositeOperation = 'screen';
+    particles.forEach(p => {
+        p.update();
+        p.draw();
+    });
+    ctx.restore();
+}
+
+// --- EXPORT ENGINE ---
+async function exportVideo() {
+    if (exportBtn.disabled || isExporting) return;
+
+    isExporting = true;
+    exportBtn.disabled = true;
+    exportBtn.innerHTML = '<span class="flex items-center"><svg class="animate-spin -ml-1 mr-2 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Préparation...</span>';
+    progressContainer.style.display = 'block';
+    progressBar.style.width = '0%';
+
+    let exportRenderLoopId;
+    let stopRecordingHandler;
+
+    try {
+        cancelAnimationFrame(animationFrameId);
+        animationFrameId = null;
+
+        audioPlayer.pause();
+        audioPlayer.currentTime = 0;
+        audioPlayer.muted = true;
+
+        const fps = settings.exportQuality;
+        const videoStream = canvas.captureStream(fps);
+        const videoTrack = videoStream.getVideoTracks()[0];
+
+        const audioStream = audioPlayer.captureStream ? audioPlayer.captureStream() : audioPlayer.mozCaptureStream();
+        if (!audioStream || audioStream.getAudioTracks().length === 0) {
+            throw new Error("Impossible de capturer la piste audio. Le fichier est peut-être corrompu.");
+        }
+        const audioTrack = audioStream.getAudioTracks()[0];
+
+        const combinedStream = new MediaStream([videoTrack, audioTrack]);
+        const chunks = [];
+
+        let mimeType;
+        switch (settings.exportFormat) {
+            case 'mp4':
+                mimeType = 'video/mp4; codecs=avc1.42E01E,mp4a.40.2';
+                break;
+            case 'mkv':
+                mimeType = 'video/x-matroska; codecs=avc1,opus';
+                break;
+            case 'webm':
+            default:
+                mimeType = 'video/webm; codecs=vp9,opus';
+        }
+
+        if (!MediaRecorder.isTypeSupported(mimeType)) {
+            console.warn(`Format ${settings.exportFormat} non supporté, utilisation de WebM`);
+            mimeType = 'video/webm; codecs=vp9,opus';
+            settings.exportFormat = 'webm';
+        }
+
+        const recorder = new MediaRecorder(combinedStream, {
+            mimeType,
+            videoBitsPerSecond: settings.videoBitrate,
+            audioBitsPerSecond: 256000
+        });
+
+        recorder.ondataavailable = e => e.data.size > 0 && chunks.push(e.data);
+
+        recorder.onstop = () => {
+            audioPlayer.removeEventListener('ended', stopRecordingHandler);
+            cancelAnimationFrame(exportRenderLoopId);
+
+            if (chunks.length === 0) {
+                alert("Erreur de rendu: Aucune donnée vidéo n'a été générée. L'exportation a échoué.");
+                resetUI();
+                return;
+            }
+
+            const blob = new Blob(chunks, { type: chunks[0].type });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `lyric_video_${Date.now()}.${settings.exportFormat}`;
+            document.body.appendChild(a);
+            a.click();
+            URL.revokeObjectURL(url);
+            a.remove();
+            resetUI();
+        };
+
+        stopRecordingHandler = () => {
+            if (recorder.state === 'recording') {
+                recorder.stop();
+            }
+        };
+        audioPlayer.addEventListener('ended', stopRecordingHandler, { once: true });
+
+        const exportRenderLoop = (timestamp) => {
+            if (!isExporting) return;
+
+            drawFrame(timestamp);
+
+            const progress = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+            progressBar.style.width = `${progress}%`;
+            exportBtn.innerHTML = `<span class="flex items-center">Rendu... ${Math.round(progress)}%</span>`;
+
+            exportRenderLoopId = requestAnimationFrame(exportRenderLoop);
+        };
+
+        recorder.start();
+        await audioPlayer.play();
+        exportRenderLoopId = requestAnimationFrame(exportRenderLoop);
+
+    } catch (error) {
+        console.error('Export error:', error);
+        alert('Erreur lors de l\'export: ' + error.message);
+        if (stopRecordingHandler) {
+            audioPlayer.removeEventListener('ended', stopRecordingHandler);
+        }
+        if(exportRenderLoopId) {
+            cancelAnimationFrame(exportRenderLoopId);
+        }
+        resetUI();
+    }
+}
+
+function resetUI() {
+    isExporting = false;
+    audioPlayer.muted = false;
+    progressContainer.style.display = 'none';
+    progressBar.style.width = '0';
+    exportBtn.disabled = !files.audio;
+    exportBtn.innerHTML = '<span class="flex items-center"><svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"></path></svg>Exporter la Vidéo</span>';
+    audioPlayer.currentTime = 0;
+    audioPlayer.pause();
+    if (lyrics.length > 0 && !animationFrameId) {
+        drawFrame(performance.now());
+    }
+}
+
+// --- INITIALIZATION ---
+document.addEventListener('DOMContentLoaded', init);
+
+// Add gradient animation to title
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes animate-gradient {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+    .animate-gradient {
+        background-size: 200% 200%;
+        animation: animate-gradient 3s ease infinite;
+    }
+`;
+document.head.appendChild(style);
+</script>
+
+</body>
+</html>

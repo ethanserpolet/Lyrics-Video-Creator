@@ -1,0 +1,12 @@
+{
+  "name": "lyric-video-creator",
+  "version": "0.1.0",
+  "description": "Electron frontend for Lyric Video Creator",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "electron": "^25.3.1"
+  }
+}
