@@ -37,7 +37,11 @@ __Et pour ensuite configurer votre Lyrics Vidéo a votre image__
 
 ## 🎬 Aperçu
 
+**Preview UI:**
+
 ![Capture d'écran de l'application](assets/screenshot.png)
+
+**Preview Video:**
 
 [![Vidéo Aperçu](https://img.youtube.com/vi/aR_-BlYj1gM/0.jpg)](https://www.youtube.com/watch?v=aR_-BlYj1gM)  
 
@@ -195,7 +199,11 @@ And then to configure your Lyrics Video to your liking
 
 ## 🎬 Preview
 
+**Preview UI:**
+
 ![UI Screenshot](assets/screenshot.png)
+
+**Preview Video:**
 
 [![Preview Video](https://img.youtube.com/vi/aR_-BlYj1gM/0.jpg)](https://www.youtube.com/watch?v=aR_-BlYj1gM)  
 
