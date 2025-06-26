@@ -87,6 +87,45 @@ __Et pour ensuite configurer votre Lyrics Vidéo a votre image__
 
 ---
 
+## 🎯 Objectifs & TODO
+
+- **Améliorer le rendu visuel**  
+  - Affiner les transitions (fluidité, timing)  
+  - Améliorer l’intégration des effets (flou, particules, synchro rythme)  
+
+- **Porter le projet en Python(Ou Autre language) + backend**  
+  - Gérer l’upload et le rendu sur serveur  
+  - Permettre un rendu plus propre et contrôlé côté serveur  
+
+- **Optimiser les performances**  
+  - Réduire l’impact mémoire et CPU lors de l’export  
+  - Charger les ressources (image, LRC) de façon asynchrone  
+
+- **Corriger les bugs connus**  
+  - Problèmes de timing sur certains navigateurs  
+  - Gestion des fichiers LRC mal formés  
+  - Comportement du bouton “Exporter” après plusieurs exports  
+
+- **Ajouter des paramètres de personnalisation avancés**  
+  - Animation lettre par lettre (type « typewriter »)  
+  - Nouvelles options d’effets de texte (masque, défilement, ondulation)  
+  - Offset et métronomie fine pour la synchronisation  
+
+---
+
+### ✨ Idées supplémentaires
+
+- **Export GIF & WebP animé**  
+- **Mode batch** pour traiter plusieurs dossiers en une seule commande  
+- **Interface mobile-responsive** et PWA (Progressive Web App)  
+- **Thèmes clair/sombre** et localisation (FR / EN / ES…)  
+- **API REST** pour automatiser le rendu depuis d’autres services  
+- **Tests unitaires** et CI/CD (GitHub Actions)  
+- **Documentation interactive** (Storybook, Docsify…)  
+- **Plugin OBS** pour streamer directement la lyric video en live  
+
+---
+
 ## 🤝 Contribuer
 
 Les contributions sont les bienvenues !  
