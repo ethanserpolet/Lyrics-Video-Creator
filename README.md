@@ -10,9 +10,28 @@
 Ce projet fournit une interface sobre et moderne (avec Tailwind CSS et “effet verre liquide”) pour importer :  
 - Une image (ex. pochette d’album)  
 - Un fichier audio (MP3, WAV, etc.)  
-- Un fichier de paroles au format LRC  
+- Un fichier de paroles au format LRC
 
-Et pour ensuite configurer votre Lyrics Vidéo a votre image
+***Qu'est-ce-que un fichier LRC ???***
+
+Le LRC (nom faisant référence au mot anglais lyrics qui est employé pour désigner les paroles d'une chanson) est un format de fichier contenant des paroles de chansons lisibles par les lecteurs MP3 compatibles. Les paroles sont dans un fichier texte d'extension .lrc et sont formatées pour permettre aux lecteurs MP3 de les afficher au moment précis où les paroles sont prononcées dans la chanson, comme pour le karaoké.
+C'est un système à balises, comme HTML.
+
+Exemple:
+```
+[ti:Princess of the Dawn]
+[ar:Accept]
+[al:Restless and Wild]
+[by:Christophe Dang Ngoc Chan]
+
+[00:15]There's rain on the mountain
+```
+
+On peut les retrouver librement notemment sur Musixmatch et les récupérer gratuitement avec ceci [MxLRC](https://github.com/fashni/MxLRC)
+Ou les faire sois-même facilement et rapidement avec [LRCCreator](https://www.lrcgenerator.com/) , [LRCMaker](https://lrc-maker.github.io/) ou [LyricPotato](https://lyricpotato.com/)
+
+
+__Et pour ensuite configurer votre Lyrics Vidéo a votre image__
 
 ---
 
