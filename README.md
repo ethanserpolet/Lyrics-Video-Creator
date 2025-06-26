@@ -20,8 +20,9 @@ Et pour ensuite configurer votre Lyrics Vidéo a votre image
 
 ![Capture d'écran de l'application](assets/screenshot.png)
 
-[![Aperçu 1](https://img.youtube.com/vi/aR_-BlYj1gM/0.jpg)](https://www.youtube.com/watch?v=aR_-BlYj1gM)  
 *Video d’aperçu 1*
+[![Aperçu 1](https://img.youtube.com/vi/aR_-BlYj1gM/0.jpg)](https://www.youtube.com/watch?v=aR_-BlYj1gM)  
+
 
 ---
 
