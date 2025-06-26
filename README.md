@@ -60,8 +60,8 @@ __Et pour ensuite configurer votre Lyrics Vidéo a votre image__
 
 1. **Cloner le dépôt**  
    ```bash
-   git clone https://github.com/TON_UTILISATEUR/lyric-video-creator.git
-   cd lyric-video-creator
+   git clone https://github.com/ethanserpolet/Lyrics-Video-Creator.git
+   cd Lyrics-Video-Creator
    ```
 2. **Ouvrir directement le index.html (aucune dépendance serveur requise)**
 
