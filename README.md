@@ -1,8 +1,4 @@
-# Lyric Video Creator
-
 # 🇫🇷 French Version (For English Check Below)
-
----
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)  
 **Lyric Video Creator** est une application web permettant de générer facilement des vidéos de paroles (“lyric videos”) à partir de fichiers image, audio et LRC.
@@ -164,7 +160,7 @@ Créé avec ❤ par [Ethan Serpolet](https://ethan.serpolet.fun)
 
 # 🇺🇸 🇬🇧 English Version
 
-[![License: MIT] (https://img.shields.io/badge/License-MIT-blue.svg)] (LICENSE) 
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)  
 **Lyric Video Creator** is a web application that allows you to easily generate lyric videos from image, audio, and LRC files.
 
 ---
