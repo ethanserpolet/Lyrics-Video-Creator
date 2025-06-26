@@ -119,10 +119,11 @@ __Et pour ensuite configurer votre Lyrics Vidéo a votre image__
 - **Mode batch** pour traiter plusieurs dossiers en une seule commande  
 - **Interface mobile-responsive** et PWA (Progressive Web App)  
 - **Thèmes clair/sombre** et localisation (FR / EN / ES…)  
-- **API REST** pour automatiser le rendu depuis d’autres services  
-- **Tests unitaires** et CI/CD (GitHub Actions)  
+- **API REST** pour automatiser le rendu depuis d’autres services
+- **Enhanced LRC** Afin de prendre en compte la synchronisation des paroles mots par mots au lieu de ligne par ligne
 - **Documentation interactive** (Storybook, Docsify…)  
-- **Plugin OBS** pour streamer directement la lyric video en live  
+- **Plugin OBS** pour streamer directement la lyric video en live
+- **End Screen** Ajout de ___endScreen/outro___ et de ___startScreen/intro___ personalisés
 
 ---
 
