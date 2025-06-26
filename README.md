@@ -20,7 +20,8 @@ Et pour ensuite configurer votre Lyrics Vidéo a votre image
 
 ![Capture d'écran de l'application](assets/screenshot.png)
 
-<iframe width="640" height="360" src="https://youtu.be/aR_-BlYj1gM" title="Aperçu 1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+[![Aperçu 1](https://img.youtube.com/vi/aR_-BlYj1gM/0.jpg)](https://www.youtube.com/watch?v=aR_-BlYj1gM)  
+*Video d’aperçu 1*
 
 ---
 
