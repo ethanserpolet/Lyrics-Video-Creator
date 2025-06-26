@@ -1,4 +1,4 @@
-# 🇫🇷 French Version (For English Check Below)
+# 🇫🇷 French Version [For English Check Below](https://github.com/ethanserpolet/Lyrics-Video-Creator?tab=readme-ov-file#--english-version)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)  
 **Lyric Video Creator** est une application web permettant de générer facilement des vidéos de paroles (“lyric videos”) à partir de fichiers image, audio et LRC.
