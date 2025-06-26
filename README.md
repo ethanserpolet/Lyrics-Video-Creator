@@ -12,7 +12,23 @@ Ce projet fournit une interface sobre et moderne (avec Tailwind CSS et “effet 
 - Un fichier audio (MP3, WAV, etc.)  
 - Un fichier de paroles au format LRC  
 
-…puis synchroniser automatiquement l’affichage des paroles sur la vidéo et exporter le résultat (WebM, MP4, MKV).
+Et pour ensuite configurer votre Lyrics Vidéo a votre image
+
+---
+
+## 🎬 Aperçu
+
+![Capture d'écran de l'application](assets/screenshot.png)
+
+<video controls width="640" loop muted>
+  <source src="assets/preview1.mp4" type="video/mp4">
+  Votre navigateur ne prend pas en charge la vidéo.
+</video>
+
+<video controls width="640" loop muted>
+  <source src="assets/preview2.mp4" type="video/mp4">
+  Votre navigateur ne prend pas en charge la vidéo.
+</video>
 
 ---
 
